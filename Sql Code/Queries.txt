@@ -1,0 +1,356 @@
+1.SELECT * FROM book_store.books where Book_name = '1';
+2.SELECT *  FROM book_store.customers ORDER BY Join_date limit 1;
+3.SELECT Book_id,Book_name,Year_published FROM book_store.books ORDER BY Year_published limit 1;
+4.SELECT Order_id, Order_date, Payment_type, Total_price, Order_status FROM book_store.orders ORDER BY Order_date;;
+5.
+SELECT sum(Quantity) FROM book_store.book_order o INNER JOIN books b ON b.Book_id = o.Book_id where Book_name='Harry Potter';
+6.
+SELECT 
+    Author_first_name,Author_last_name
+FROM
+    book_store.orders o
+         INNER JOIN
+     book_order b 
+ON b.Order_id = o.Order_id
+ INNER JOIN
+     book_authors ba 
+ON ba.Book_id = b.Book_id
+ INNER JOIN
+     author a 
+ON a.Author_id = ba.Author_id
+where
+o.Order_date >= '2019-09-01' and o.Order_date < '2019-11-01'
+GROUP BY `Author_first_name`
+    ORDER BY COUNT(Author_first_name) DESC
+    LIMIT    1;
+7.
+SELECT * FROM book_store.orders;
+
+SELECT 
+        c.Customer_ID,SUM(Quantity) as Quantity
+FROM
+    book_store.orders o
+         INNER JOIN
+     customers c 
+ON c.Customer_ID = o.Customer_ID
+         INNER JOIN
+     book_order bo 
+ON bo.Order_id = o.Order_id
+GROUP BY Customer_ID
+ORDER BY Quantity DESC
+limit 3;
+8.
+SELECT 
+        Book_name,count(Translator_id)
+FROM
+    book_store.books b
+    INNER JOIN
+     inventory inv 
+ON b.Book_id = inv.Book_id
+where Quantity>0
+    GROUP BY Book_name
+ORDER BY count(Translator_id) DESC limit 1;
+9.
+SELECT 
+        Book_name,Order_date,Quantity,Sell_price
+FROM
+    book_store.customers c
+    
+    INNER JOIN
+     orders o 
+ON c.Customer_ID = o.Customer_ID
+INNER JOIN
+     book_order bo 
+ON bo.Order_id = o.Order_id
+INNER JOIN
+     books ba 
+ON ba.Book_id = bo.Book_id
+ where c.Customer_ID=1;
+ 
+ 10.
+SELECT 
+        Book_name,Order_date,bo.Quantity,bo.Sell_price,Order_status
+FROM
+    book_store.customers c
+    
+    INNER JOIN
+     orders o 
+ON c.Customer_ID = o.Customer_ID
+INNER JOIN
+     book_order bo 
+ON bo.Order_id = o.Order_id
+INNER JOIN
+     books ba 
+ON ba.Book_id = bo.Book_id
+INNER JOIN
+   inventory   inv
+ON inv.Book_id = bo.Book_id
+ where c.Customer_ID=1
+ order by Order_date;
+ 11.
+ SELECT 
+         Quantity,Wieght,Method_price_per_kilo,COALESCE(Quantity,0)*COALESCE(Wieght,0)*COALESCE(Method_price_per_kilo,0) as Total_shipping_cost
+FROM
+    book_store.orders o
+    INNER JOIN
+     book_order bo 
+ON o.Order_id = bo.Order_id
+INNER JOIN
+     books ba 
+ON ba.Book_id = bo.Book_id
+INNER JOIN
+     shipments sh 
+ON bo.Shipment_id = sh.Shipment_id
+INNER JOIN
+     shipment_method sh_me
+ON sh_me.Shipment_method_id = sh.Shipment_method_id
+ where o.Order_id=5;
+12.
+SELECT 
+        o.Order_id,count(bo.Shipment_id)
+FROM
+    book_store.orders o
+         INNER JOIN
+     book_order bo 
+ON bo.Order_id = o.Order_id
+INNER JOIN
+     shipments sh 
+ON bo.Shipment_id = sh.Shipment_id
+INNER JOIN
+     shipment_method sh_me
+ON sh_me.Shipment_method_id = sh.Shipment_method_id
+GROUP BY Order_id
+ORDER BY Order_id DESC;
+//////////////////////////////////////////////////////
+SELECT 
+       Order_date,sh.Order_status,Address_street
+FROM
+    book_store.orders o
+         INNER JOIN
+     book_order bo 
+ON bo.Order_id = o.Order_id
+INNER JOIN
+     shipments sh 
+ON bo.Shipment_id = sh.Shipment_id
+INNER JOIN
+     shipment_method sh_me
+ON sh_me.Shipment_method_id = sh.Shipment_method_id
+INNER JOIN
+     address ad
+ON sh.Address_id = ad.Address_id
+where o.Order_id=2;
+13.
+SELECT Order_status FROM book_store.shipments where Shipment_id=1;
+14.
+SELECT 
+		Total_price, o.Order_date
+FROM
+    book_store.orders o
+    INNER JOIN
+     book_order bo 
+ON o.Order_id = bo.Order_id
+INNER JOIN
+     books ba 
+ON ba.Book_id = bo.Book_id
+INNER JOIN
+     shipments sh 
+ON bo.Shipment_id = sh.Shipment_id
+INNER JOIN
+     shipment_method sh_me
+ON sh_me.Shipment_method_id = sh.Shipment_method_id
+INNER JOIN
+     company com
+ON com.Company_id = sh_me.Company_id
+where Company_name='XPress' and Order_date >= '2018-09-01' and Order_date < '2020-08-01';
+15.
+SELECT 
+		sum(Total_price) as Total_bit_pament
+FROM
+    book_store.orders o
+    INNER JOIN
+     book_order bo 
+ON o.Order_id = bo.Order_id
+INNER JOIN
+     books ba 
+ON ba.Book_id = bo.Book_id
+where Payment_type='Bit';
+16.
+SELECT 
+		sum(Sell_price)
+FROM
+    book_store.orders o
+    INNER JOIN
+     book_order bo 
+ON o.Order_id = bo.Order_id
+where
+o.Order_date >= DATE_SUB(NOW(),INTERVAL 1 YEAR) and o.Order_date < CURDATE();
+///////////////////////////////////////////////////////////////////////////////
+SELECT 
+		*
+FROM
+    book_store.orders o
+    INNER JOIN
+     book_order bo 
+ON o.Order_id = bo.Order_id
+where
+o.Order_date >= DATE_SUB(NOW(),INTERVAL 1 YEAR) and o.Order_date < CURDATE()
+and Sell_price>50;
+17.
+SELECT 
+		Company_name,count(com.Company_id) as Total_shipping_cost
+FROM
+    book_store.orders o
+    INNER JOIN
+     book_order bo 
+ON o.Order_id = bo.Order_id
+INNER JOIN
+     books ba 
+ON ba.Book_id = bo.Book_id
+INNER JOIN
+     shipments sh 
+ON bo.Shipment_id = sh.Shipment_id
+INNER JOIN
+     shipment_method sh_me
+ON sh_me.Shipment_method_id = sh.Shipment_method_id
+INNER JOIN
+     company com
+ON com.Company_id = sh_me.Company_id
+GROUP BY Company_name;
+18.
+SELECT 
+		Shipment_id
+FROM
+    book_store.book_order bo
+INNER JOIN
+     books ba 
+ON ba.Book_id = bo.Book_id
+group by Shipment_id;
+///////////////////////////////////////////
+SELECT 
+		bo.Shipment_id,Book_name,Publisher_id,count(Publisher_id) as Publisher_num,Method_type,Company_name
+FROM
+    book_store.book_order bo
+INNER JOIN
+     books ba 
+ON ba.Book_id = bo.Book_id
+INNER JOIN
+     shipments sh 
+ON bo.Shipment_id = sh.Shipment_id
+INNER JOIN
+     shipment_method sh_me
+ON sh_me.Shipment_method_id = sh.Shipment_method_id
+INNER JOIN
+     company com
+ON com.Company_id = sh_me.Company_id
+where bo.Shipment_id=4 
+group by Book_name
+HAVING Publisher_num > 1;
+19.
+SELECT 
+		o.Customer_ID
+FROM
+    book_store.orders o
+INNER JOIN
+     customers c 
+ON c.Customer_ID = o.Customer_ID
+where
+o.Order_date >= DATE_SUB(NOW(),INTERVAL 2 YEAR)
+group by o.Customer_ID;
+///////////////////////////////////////////////////
+SELECT 
+		o.Customer_ID,First_name,Last_name,Phone_num
+FROM
+    book_store.orders o
+INNER JOIN
+     customers c 
+ON c.Customer_ID = o.Customer_ID
+INNER JOIN
+     phone p 
+ON c.Customer_phone = p.Phone_id
+where
+o.Order_date <= DATE_SUB(NOW(),INTERVAL 2 YEAR)
+group by o.Customer_ID;
+20.
+SELECT 
+		*
+FROM
+    book_store.orders o
+INNER JOIN
+     customers c 
+ON c.Customer_ID = o.Customer_ID
+INNER JOIN
+     phone p 
+ON c.Customer_phone = p.Phone_id
+where
+Order_status=3 and LastModify_date <= DATE_SUB(NOW(),INTERVAL 2 week);
+21.
+SELECT 
+    sum(Quantity)
+FROM
+    book_store.inventory
+    where Location=2;
+22A.
+SELECT 
+    sum(Quantity),sum(Total_price)
+FROM
+    book_store.stoe_order
+    where
+    Order_date >= '2016-09-01' and Order_date < '2020-08-01';
+22B.
+SELECT 
+		sum(Sell_price)
+FROM
+    book_store.orders o
+    INNER JOIN
+     book_order bo 
+ON o.Order_id = bo.Order_id
+where
+    Order_date >= '2018-09-01' and Order_date < '2020-08-01';
+///////////////////////////////////////////////////////////
+SELECT 
+    sum(Quantity),sum(Total_price)
+FROM
+    book_store.stoe_order
+    where
+    Order_date >= '2016-09-01' and Order_date < '2020-08-01';
+////////////////////////////////////////////////////////////////
+SELECT 
+    sum(Payment_amount)
+FROM
+    book_store.payments
+    where Payment_month=8 and Payment_year=2020;
+23.
+SELECT 
+    YEAR(Order_date),month(Order_date)
+FROM
+    book_store.orders
+    where Order_date >= DATE_SUB(NOW(),INTERVAL 1 YEAR) and Order_date < CURDATE()
+    group by YEAR(Order_date),month(Order_date);
+//////////////////////////////////////////////////
+SELECT 
+    sum(Total_price)
+FROM
+    book_store.orders
+    where year(Order_date)=2019 and month(Order_date)=10;
+24.
+SELECT 
+    sum(COALESCE(Salary_hour_num,0)*COALESCE(Salary_amount_per_hour,0))
+FROM
+    book_store.salaries
+    where Salary_id=1 and Salary_month=1;
+25.
+SELECT 
+    Employee_id,First_name,Last_name,count(Employee_id) as Order_num
+FROM
+    book_store.orders o
+    INNER JOIN
+     customers c 
+ON c.Customer_ID = o.Customer_ID
+    where year(Order_date)=2020 and month(Order_date)=01
+    group by YEAR(Order_date),month(Order_date),Employee_id
+    order by Order_num DESC
+    limit 1;
+	
+SELECT bo.Shipment_id,Book_name,Publisher_id,count(Publisher_id) as Publisher_num,Method_type,Company_name FROM book_store.book_order bo INNER JOIN books ba 
+ON ba.Book_id = bo.Book_id INNER JOIN shipments sh  ON bo.Shipment_id = sh.Shipment_id INNER JOIN shipment_method sh_me
+ON sh_me.Shipment_method_id = sh.Shipment_method_id INNER JOIN company com ON com.Company_id = sh_me.Company_id where bo.Shipment_id=4 group by Book_name HAVING Publisher_num > 1;

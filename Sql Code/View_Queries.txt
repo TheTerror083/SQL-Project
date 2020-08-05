@@ -1,0 +1,40 @@
+1.SELECT * FROM book_store.books where Book_name = '1';
+2.SELECT *  FROM book_store.customers ORDER BY Join_date limit 1;
+3.SELECT Book_id,Book_name,Year_published FROM book_store.books ORDER BY Year_published limit 1;
+4.SELECT Order_id, Order_date, Payment_type, Total_price, Order_status FROM book_store.orders ORDER BY Order_date;
+5.SELECT * FROM book_copy where Book_name='Blue Sky';
+6.SELECT * FROM Best_author where Order_date >= '2018-09-01' and Order_date < '2019-11-01' limit 1;
+7.SELECT * FROM Best_customer;
+8.SELECT * FROM Most_translated;
+9.SELECT * FROM Customer_buy_history  where Customer_ID=1;
+10.SELECT * FROM Customer_Order_history  where Customer_ID=1;
+11.SELECT sum(Total_shipping_cost) FROM Shipping_cost  where Order_id=5;
+12.
+SELECT Order_id FROM Ship_num_in_order where Num_os_shippment>1 and Customer_ID=1;
+SELECT * FROM Details_split_shipping where Order_id=2;
+13.SELECT Order_status FROM book_store.shipments where Shipment_id=1;
+14.SELECT sum(Total_price) FROM XPress_Total_Month where Order_date >= '2018-09-01' and Order_date < '2020-08-01';
+15.SELECT * FROM Bit_Total_Pay where Order_date >= '2018-09-01' and Order_date < '2020-08-01' ;
+16.
+SELECT * FROM Avg_order_last_year;
+SELECT * FROM orders_last_year where Sell_price>50;
+17.SELECT * FROM Ship_company_sum_last12;
+18.
+SELECT * FROM Shipping_list;
+SELECT * FROM Two_Publisher_ship_details where Shipment_id=4 ;
+19.
+SELECT * FROM Customer_list_not_bought24;
+20.SELECT * FROM Customer_list_not_Arrive;
+21.SELECT sum(Quantity) FROM book_store.inventory where Location=2;
+22.SELECT  sum(Quantity),sum(Total_price) FROM book_store.stoe_order where Order_date >= '2016-09-01' and Order_date < '2020-08-01';
+23.
+SELECT sum(Sell_price) FROM book_store.orders o INNER JOIN book_order bo  ON o.Order_id = bo.Order_id where Order_date >= '2018-09-01' and Order_date < '2020-08-01';
+SELECT sum(Quantity),sum(Total_price) FROM book_store.stoe_order where Order_date >= '2016-09-01' and Order_date < '2020-08-01';
+SELECT sum(Payment_amount) FROM book_store.payments where Payment_month=8 and Payment_year=2020;
+24.
+SELECT * FROM Profit_Month_Year_last;
+SELECT sum(Total_price) FROM book_store.orders where year(Order_date)=2019 and month(Order_date)=10;
+25.
+SELECT sum(COALESCE(Salary_hour_num,0)*COALESCE(Salary_amount_per_hour,0)) FROM book_store.salaries where Salary_id=1 and Salary_month=1;
+26.
+SELECT * FROM Best_Employee where year(Order_date)=2020 and month(Order_date)=01 limit 1;
